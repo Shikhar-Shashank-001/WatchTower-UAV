@@ -2,9 +2,9 @@ import os
 import numpy as np
 import librosa
 from scipy.signal import butter, lfilter
-from tqdm import tqdm   # ⭐ added
+from tqdm import tqdm 
 
-# ---------------- CONFIG ----------------
+
 TANK_DIR = r"C:/Users/shikh/OneDrive/Desktop/Project/Output"
 NONTANK_DIR = r"C:/Users/shikh/OneDrive/Desktop/Project/Output2"
 
@@ -13,10 +13,10 @@ LOWCUT = 20
 HIGHCUT = 500
 
 N_MFCC = 13
-# ----------------------------------------
 
 
-# Band-pass filter
+
+
 def bandpass_filter(signal, sr, lowcut, highcut, order=4):
     nyq = 0.5 * sr
     low = lowcut / nyq
@@ -49,18 +49,18 @@ def extract_features(file_path):
     return np.hstack([mean, var])
 
 
-# -------- DATASET BUILDING --------
+
 X = []
 y = []
 
-# Tank = 1
+
 tank_files = [f for f in os.listdir(TANK_DIR) if f.endswith(".wav")]
 for file in tqdm(tank_files, desc="Processing TANK sounds", unit="file"):
     path = os.path.join(TANK_DIR, file)
     X.append(extract_features(path))
     y.append(1)
 
-# Non-tank = 0
+
 nontank_files = [f for f in os.listdir(NONTANK_DIR) if f.endswith(".wav")]
 for file in tqdm(nontank_files, desc="Processing NON-TANK sounds", unit="file"):
     path = os.path.join(NONTANK_DIR, file)
@@ -73,6 +73,6 @@ y = np.array(y)
 print("\nFeature matrix shape:", X.shape)
 print("Labels shape:", y.shape)
 
-# Save for training
+
 np.save("X_features.npy", X)
 np.save("y_labels.npy", y)
