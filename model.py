@@ -10,14 +10,14 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix
 
-# ---------------- LOAD DATA ----------------
+# LOAD DATA
 X = np.load("X_features.npy")
 y = np.load("y_labels.npy")
 
 print("X shape:", X.shape)
 print("y shape:", y.shape)
 
-# ---------------- METRIC FUNCTIONS ----------------
+# METRIC FUNCTIONS
 def compute_metrics(y_true, y_pred):
     cm = confusion_matrix(y_true, y_pred)
     tn, fp, fn, tp = cm.ravel()
@@ -46,7 +46,7 @@ def plot_confusion_matrix(cm, title):
     plt.show()
 
 
-# ---------------- CROSS-VALIDATION SETUP ----------------
+# CROSS-VALIDATION SETUP
 cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
 
 
@@ -64,10 +64,7 @@ def cross_val_with_progress(model, X, y, cv, desc):
 
     return y_pred
 
-
-# ======================================================
-# 1️⃣ CUBIC SVM (Polynomial degree = 3)
-# ======================================================
+# SVM with cubic kernel
 svm_poly = Pipeline([
     ("scaler", StandardScaler()),
     ("svm", SVC(kernel="poly", degree=3, C=1.0))
@@ -81,7 +78,7 @@ acc_p, sen_p, spe_p, cm_p = compute_metrics(y, y_pred_poly)
 
 print("\n=== Cubic SVM (Polynomial) ===")
 print(f"Accuracy    : {acc_p:.4f}")
-print(f"Sensitivity : {sen_p:.4f}")
+print(f"Recall : {sen_p:.4f}")
 print(f"Specificity : {spe_p:.4f}")
 
 plot_confusion_matrix(cm_p, "Confusion Matrix – Cubic SVM")
@@ -92,9 +89,8 @@ joblib.dump(svm_poly, "svm_cubic_model.joblib")
 print("Saved: svm_cubic_model.joblib")
 
 
-# ======================================================
-# 2️⃣ RBF (Gaussian) SVM
-# ======================================================
+
+# RBF (Gaussian) SVM
 svm_rbf = Pipeline([
     ("scaler", StandardScaler()),
     ("svm", SVC(kernel="rbf", C=1.0, gamma="scale"))
@@ -108,7 +104,7 @@ acc_r, sen_r, spe_r, cm_r = compute_metrics(y, y_pred_rbf)
 
 print("\n=== RBF (Gaussian) SVM ===")
 print(f"Accuracy    : {acc_r:.4f}")
-print(f"Sensitivity : {sen_r:.4f}")
+print(f"Recall : {sen_r:.4f}")
 print(f"Specificity : {spe_r:.4f}")
 
 plot_confusion_matrix(cm_r, "Confusion Matrix – RBF SVM")
